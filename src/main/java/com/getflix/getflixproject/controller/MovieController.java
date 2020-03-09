@@ -1,5 +1,7 @@
-package com.getflix.getflixproject;
+package com.getflix.getflixproject.controller;
 
+import com.getflix.getflixproject.repository.MovieRepository;
+import com.getflix.getflixproject.ResourceNotFoundException;
 import com.getflix.getflixproject.model.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,16 +33,19 @@ public class MovieController {
     }
 
     @GetMapping("/Movies/{id}")
-    public ResponseEntity<Movie> getEmployeeById(@PathVariable(value = "id") Integer movieId)
+    public ResponseEntity<Movie> getMovieById(@PathVariable(value = "id") Integer movieId)
             throws ResourceNotFoundException {
         Movie movie = movieRepository.findById(movieId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: " + movieId));
         return ResponseEntity.ok().body(movie);
     }
 
-    @PostMapping("/Movies")
-    public Movie createEmployee(@Valid @RequestBody Movie movie) {
-        return movieRepository.save(movie);
+    @GetMapping("/Movies/ByCategory/{id}")
+    public List<Movie> geMovieByCategoryId(@PathVariable(value = "id") Integer categoryId)
+            throws ResourceNotFoundException {
+        List<Movie> movie = movieRepository.findByCategoryId(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Movies not found for this category id :: " + categoryId));
+        return movie;
     }
 
     @PutMapping("/Movies/{id}")

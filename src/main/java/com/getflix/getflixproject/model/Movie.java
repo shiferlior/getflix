@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Table(name = "movie")
+@Table(name = "[movie]")
 public class Movie {
     private int id;
     private String name;
@@ -37,7 +37,8 @@ public class Movie {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     public int getId() {
         return this.id;
     }

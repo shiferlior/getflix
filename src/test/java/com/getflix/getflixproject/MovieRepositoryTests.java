@@ -1,8 +1,8 @@
 package com.getflix.getflixproject;
 
-import org.aspectj.lang.annotation.Before;
+import com.getflix.getflixproject.repository.MovieRepository;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+
 @SpringBootTest
 public class MovieRepositoryTests {
     private MovieRepository movieRepository;
