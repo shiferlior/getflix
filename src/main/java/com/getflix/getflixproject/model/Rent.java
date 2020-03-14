@@ -14,8 +14,7 @@ public class Rent {
     private boolean isReturned;
 
     public Rent() {}
-    public Rent(int userId,int movieId, Date startDate, Date endDate,
-             boolean isReturned) {
+    public Rent(int userId,int movieId, Date startDate, Date endDate) {
         this.userId = userId;
         this.movieId = movieId;
         this.startDate = startDate;

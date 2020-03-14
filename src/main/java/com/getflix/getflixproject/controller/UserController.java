@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class UserController {
     @Autowired
@@ -19,7 +20,7 @@ public class UserController {
 
     @GetMapping("/Users")
     public List<User> getAllusers() {
-        return (List<User>) userRepository.findAll();
+        return userRepository.findAll();
     }
 
     @PostMapping("/Users")

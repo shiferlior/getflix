@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class movieCategoriesController {
     @Autowired
@@ -19,7 +20,7 @@ public class movieCategoriesController {
 
     @GetMapping("/movieCategories")
     public List<MovieCategories> getAllMovieCategoriess() {
-        return (List<MovieCategories>) movieCategoriesRepository.findAll();
+        return  movieCategoriesRepository.findAll();
     }
 
     @PostMapping("/movieCategories")

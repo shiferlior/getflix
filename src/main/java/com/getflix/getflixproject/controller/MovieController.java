@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class MovieController {
     @Autowired
@@ -24,7 +25,7 @@ public class MovieController {
 
     @GetMapping("/Movies")
     public List<Movie> getAllMovies() {
-        return (List<Movie>) movieRepository.findAll();
+        return  movieRepository.findAll();
     }
 
     @PostMapping("/Movies")
@@ -43,9 +44,8 @@ public class MovieController {
     @GetMapping("/Movies/ByCategory/{id}")
     public List<Movie> geMovieByCategoryId(@PathVariable(value = "id") Integer categoryId)
             throws ResourceNotFoundException {
-        List<Movie> movie = movieRepository.findByCategoryId(categoryId)
+        return movieRepository.findByCategoryId(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Movies not found for this category id :: " + categoryId));
-        return movie;
     }
 
     @PutMapping("/Movies/{id}")

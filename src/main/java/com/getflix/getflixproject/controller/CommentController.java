@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class CommentController {
     @Autowired
@@ -19,7 +20,7 @@ public class CommentController {
 
     @GetMapping("/Comments")
     public List<Comment> getAllMovies() {
-        return (List<Comment>) commentRepository.findAll();
+        return  commentRepository.findAll();
     }
 
     @PostMapping("/Comments")
@@ -38,9 +39,8 @@ public class CommentController {
     @GetMapping("/Comments/ByMovieId/{id}")
     public List<Comment> getCommentByMovieId(@PathVariable(value = "id") Integer movieId)
             throws ResourceNotFoundException {
-        List<Comment>  comment = commentRepository.findByMovieId(movieId)
+        return commentRepository.findByMovieId(movieId)
                 .orElseThrow(() -> new ResourceNotFoundException("comment not found for this movie id :: " + movieId));
-        return comment;
     }
 
     @PutMapping("/Comments/{id}")

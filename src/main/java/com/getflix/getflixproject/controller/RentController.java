@@ -2,25 +2,38 @@ package com.getflix.getflixproject.controller;
 
 import com.getflix.getflixproject.ResourceNotFoundException;
 import com.getflix.getflixproject.model.Rent;
+import com.getflix.getflixproject.model.RentNameDetails;
 import com.getflix.getflixproject.repository.RentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class RentController {
     @Autowired
     private RentRepository rentRepository;
 
-    @GetMapping("/rents")
+    @GetMapping("/Rents")
     public List<Rent> getAllRents() {
-        return (List<Rent>) rentRepository.findAll();
+        return  rentRepository.findAll();
     }
+
+    @GetMapping("/Rents/User/{User}/Movie/{Movie}/from/{FromDate}/to/{ToDate}/IsReturn/{IsReturn}")
+    public List<RentNameDetails> getAllRentsBy(@PathVariable(value = "User") String user,
+                                    @PathVariable(value = "Movie") String movie,
+                                    @PathVariable(value = "FromDate") java.sql.Date fromDate,
+                                    @PathVariable(value = "ToDate") java.sql.Date toDate,
+                                    @PathVariable(value = "IsReturn") Boolean isReturn) {
+        return  rentRepository.findRents(user,movie,fromDate,toDate,isReturn);
+    }
+
 
     @PostMapping("/Rents")
     public Rent createRent(@Valid @RequestBody Rent rent){
