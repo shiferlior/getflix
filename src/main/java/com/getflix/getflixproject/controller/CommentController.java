@@ -2,6 +2,7 @@ package com.getflix.getflixproject.controller;
 
 import com.getflix.getflixproject.ResourceNotFoundException;
 import com.getflix.getflixproject.model.Comment;
+import com.getflix.getflixproject.model.CommentWithUsername;
 import com.getflix.getflixproject.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -19,7 +21,7 @@ public class CommentController {
     private CommentRepository commentRepository;
 
     @GetMapping("/Comments")
-    public List<Comment> getAllMovies() {
+    public List<Comment> getAllComments() {
         return  commentRepository.findAll();
     }
 
@@ -37,10 +39,10 @@ public class CommentController {
     }
 
     @GetMapping("/Comments/ByMovieId/{id}")
-    public List<Comment> getCommentByMovieId(@PathVariable(value = "id") Integer movieId)
+    public List<CommentWithUsername> getCommentByMovieId(@PathVariable(value = "id") Integer movieId)
             throws ResourceNotFoundException {
-        return commentRepository.findByMovieId(movieId)
-                .orElseThrow(() -> new ResourceNotFoundException("comment not found for this movie id :: " + movieId));
+        return commentRepository.findByMovieId(movieId);
+               // .orElseThrow(() -> new ResourceNotFoundException("comment not found for this movie id :: " + movieId));
     }
 
     @PutMapping("/Comments/{id}")

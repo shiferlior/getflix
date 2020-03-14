@@ -3,6 +3,7 @@ package com.getflix.getflixproject.controller;
 import com.getflix.getflixproject.ResourceNotFoundException;
 import com.getflix.getflixproject.model.Rent;
 import com.getflix.getflixproject.model.RentNameDetails;
+import com.getflix.getflixproject.model.RentQuery;
 import com.getflix.getflixproject.repository.RentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,22 +22,112 @@ public class RentController {
     private RentRepository rentRepository;
 
     @GetMapping("/Rents")
-    public List<Rent> getAllRents() {
-        return  rentRepository.findAll();
+    public List<RentNameDetails> getAllRents() {
+        return rentRepository.AllRents();
     }
 
     @GetMapping("/Rents/User/{User}/Movie/{Movie}/from/{FromDate}/to/{ToDate}/IsReturn/{IsReturn}")
-    public List<RentNameDetails> getAllRentsBy(@PathVariable(value = "User") String user,
-                                    @PathVariable(value = "Movie") String movie,
-                                    @PathVariable(value = "FromDate") java.sql.Date fromDate,
-                                    @PathVariable(value = "ToDate") java.sql.Date toDate,
-                                    @PathVariable(value = "IsReturn") Boolean isReturn) {
-        return  rentRepository.findRents(user,movie,fromDate,toDate,isReturn);
+    public List<RentNameDetails> getAllRentsByUserAndMovie(@PathVariable(value = "User") String user,
+                                                           @PathVariable(value = "Movie") String movie,
+                                                           @PathVariable(value = "FromDate") java.sql.Date fromDate,
+                                                           @PathVariable(value = "ToDate") java.sql.Date toDate,
+                                                           @PathVariable(value = "IsReturn") String isReturn) {
+
+        if (!isReturn.isEmpty() && isReturn.equals("all")) {
+            if (!user.isEmpty() && !movie.isEmpty())
+                return rentRepository.findRentsWithUserMovie(user, movie, fromDate, toDate);
+            else if (!user.isEmpty() && movie.isEmpty())
+                return rentRepository.findRentsWithUser(user, fromDate, toDate);
+            else if (user.isEmpty() && movie.isEmpty())
+                return rentRepository.findRentsWithMovie(movie, fromDate, toDate);
+        } else {
+            boolean isReturned = false;
+            if (!isReturn.isEmpty() && isReturn.equals("yes"))
+                isReturned = true;
+
+            System.out.println("user " + user.isEmpty() + " " + "movie " + movie.isEmpty());
+            if (!user.isEmpty() && !movie.isEmpty())
+                return rentRepository.findRentsWithUserMovieIsReturn(user, movie, fromDate, toDate, isReturned);
+            else if (!user.isEmpty() && movie.isEmpty())
+                return rentRepository.findRentsWithUserIsReturn(user, fromDate, toDate, isReturned);
+            else if (user.isEmpty() && movie.isEmpty())
+                return rentRepository.findRentsWithMovieIsReturn(movie, fromDate, toDate, isReturned);
+        }
+        return null;
+    }
+
+    @GetMapping("/Rents/User/{User}/from/{FromDate}/to/{ToDate}/IsReturn/{IsReturn}")
+    public List<RentNameDetails> getAllRentsByUser(@PathVariable(value = "User") String user,
+                                                   @PathVariable(value = "FromDate") java.sql.Date fromDate,
+                                                   @PathVariable(value = "ToDate") java.sql.Date toDate,
+                                                   @PathVariable(value = "IsReturn") String isReturn) {
+
+        if (!isReturn.isEmpty() && isReturn.equals("all")) {
+            return rentRepository.findRentsWithUser(user, fromDate, toDate);
+        } else {
+            boolean isReturned = false;
+            if (!isReturn.isEmpty() && isReturn.equals("yes"))
+                isReturned = true;
+
+            return rentRepository.findRentsWithUserIsReturn(user, fromDate, toDate, isReturned);
+        }
+    }
+
+    @GetMapping("/Rents/Movie/{Movie}/from/{FromDate}/to/{ToDate}/IsReturn/{IsReturn}")
+    public List<RentNameDetails> getAllRentsByMovie(@PathVariable(value = "Movie") String movie,
+                                                    @PathVariable(value = "FromDate") java.sql.Date fromDate,
+                                                    @PathVariable(value = "ToDate") java.sql.Date toDate,
+                                                    @PathVariable(value = "IsReturn") String isReturn) {
+
+        if (!isReturn.isEmpty() && isReturn.equals("all")) {
+            return rentRepository.findRentsWithMovie(movie, fromDate, toDate);
+        } else {
+            boolean isReturned = false;
+            if (!isReturn.isEmpty() && isReturn.equals("yes"))
+                isReturned = true;
+
+            return rentRepository.findRentsWithMovieIsReturn(movie, fromDate, toDate, isReturned);
+        }
+    }
+
+    @PostMapping("/Rents/Query")
+    public List<RentNameDetails> queryRents(@Valid @RequestBody RentQuery rent) {
+        String user = rent.getUser();
+        String movie = rent.getMovie();
+        java.sql.Date fromDate = rent.getFromDate();
+        java.sql.Date toDate = rent.getToDate();
+        String isReturn = rent.getIsReturn();
+
+        if (!isReturn.isEmpty() && isReturn.equals("all")) {
+            if (!user.isEmpty() && !movie.isEmpty())
+                return rentRepository.findRentsWithUserMovie(user, movie, fromDate, toDate);
+            else if (!user.isEmpty() && movie.isEmpty())
+                return rentRepository.findRentsWithUser(user, fromDate, toDate);
+            else if (user.isEmpty() && !movie.isEmpty())
+                return rentRepository.findRentsWithMovie(movie, fromDate, toDate);
+            else
+                return rentRepository.findRents(fromDate,toDate);
+        } else {
+            boolean isReturned = false;
+            if (!isReturn.isEmpty() && isReturn.equals("yes"))
+                isReturned = true;
+
+            if (!user.isEmpty() && !movie.isEmpty())
+                return rentRepository.findRentsWithUserMovieIsReturn(user, movie, fromDate, toDate, isReturned);
+            else if (!user.isEmpty() && movie.isEmpty())
+                return rentRepository.findRentsWithUserIsReturn(user, fromDate, toDate, isReturned);
+            else if (user.isEmpty() && !movie.isEmpty())
+                return rentRepository.findRentsWithMovieIsReturn(movie, fromDate, toDate, isReturned);
+            else
+                return rentRepository.findRentsWithIsReturn(fromDate,toDate,isReturned);
+        }
     }
 
 
     @PostMapping("/Rents")
-    public Rent createRent(@Valid @RequestBody Rent rent){
+    public Rent createRent(@Valid @RequestBody Rent rent)  throws ResourceNotFoundException {
+        rentRepository.checkMovieQuantity(rent.getMovieId())
+            .orElseThrow(() -> new ResourceNotFoundException("Can not submit rent for this movie, there is no movie to rent in quantity"));
         return rentRepository.save(rent);
     }
 

@@ -24,20 +24,16 @@ public class MovieController {
     }
 
     @GetMapping("/Movies")
-    public List<Movie> getAllMovies() {
-        return  movieRepository.findAll();
-    }
-
-    @PostMapping("/Movies")
-    public Movie createMovie(@Valid @RequestBody Movie movie){
-        return movieRepository.save(movie);
+    public List<Movie> getAllMovies() throws ResourceNotFoundException {
+        return  movieRepository.findMovies()
+                .orElseThrow(() -> new ResourceNotFoundException("Movies not found for rent :: "));
     }
 
     @GetMapping("/Movies/{id}")
     public ResponseEntity<Movie> getMovieById(@PathVariable(value = "id") Integer movieId)
             throws ResourceNotFoundException {
         Movie movie = movieRepository.findById(movieId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: " + movieId));
+                .orElseThrow(() -> new ResourceNotFoundException("Movie not found for this id :: " + movieId));
         return ResponseEntity.ok().body(movie);
     }
 
@@ -46,6 +42,11 @@ public class MovieController {
             throws ResourceNotFoundException {
         return movieRepository.findByCategoryId(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Movies not found for this category id :: " + categoryId));
+    }
+
+    @PostMapping("/Movies")
+    public Movie createMovie(@Valid @RequestBody Movie movie){
+        return movieRepository.save(movie);
     }
 
     @PutMapping("/Movies/{id}")
