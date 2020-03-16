@@ -2,7 +2,9 @@ package com.getflix.getflixproject.controller;
 
 import com.getflix.getflixproject.ResourceNotFoundException;
 import com.getflix.getflixproject.model.Category;
+import com.getflix.getflixproject.model.CategoryUpdate;
 import com.getflix.getflixproject.model.Movie;
+import com.getflix.getflixproject.model.MovieCategories;
 import com.getflix.getflixproject.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,7 @@ public class CategoryController {
     public Category createMovie(@Valid @RequestBody Category category){
         return categoryRepository.save(category);
     }
+
 
     @GetMapping("/Categories/{id}")
     public ResponseEntity<Category> getCategoryById(@PathVariable(value = "id") Integer categoryId)

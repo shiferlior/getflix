@@ -28,6 +28,7 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
             "  ) < quantity", nativeQuery = true)
     Optional<List<Movie>> findByMovieNameAndCategory(String movieName, Integer categoryId);
 
+
     @Query(value = "SELECT Distinct m.id\n" +
             "      ,m.name\n" +
             "      ,m.description\n" +
