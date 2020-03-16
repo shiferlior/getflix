@@ -18,14 +18,15 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
             "      ,m.quantity\n" +
             "      ,m.image\n" +
             "      ,m.insertionTime\n" +
-            "  FROM movieCategories as mc\n" +
-            "  join movie as m \n" +
-            "  on m.id=mc.movieId\n" +
-            "  WHERE m.[name] like %?1% AND mc.categoryId=?2 AND (\n" +
-            "  SELECT COUNT(movieId)\n" +
-            "  FROM dbo.rent\n" +
-            "  WHERE movieId=m.id AND isReturned=0\n" +
-            "  ) < quantity", nativeQuery = true)
+            "  FROM movie as m \n" +
+            "  WHERE m.[name] like %?1% AND" +
+            "        ?2 in (SELECT DISTINCT mc.categoryId  from dbo.movieCategories mc \n" +
+            "               where mc.movieId = m.id ) AND " +
+            "       (SELECT COUNT(movieId)\n" +
+            "        FROM dbo.rent\n" +
+            "        WHERE movieId=m.id AND isReturned=0\n" +
+            "        ) < m.quantity",
+            nativeQuery = true)
     Optional<List<Movie>> findByMovieNameAndCategory(String movieName, Integer categoryId);
 
     @Query(value = "SELECT Distinct m.id\n" +
@@ -36,14 +37,13 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
             "      ,m.quantity\n" +
             "      ,m.image\n" +
             "      ,m.insertionTime\n" +
-            "  FROM movieCategories as mc\n" +
-            "  join movie as m \n" +
-            "  on m.id=mc.movieId\n" +
-            "  WHERE m.[name] like %?1% AND (\n" +
-            "  SELECT COUNT(movieId)\n" +
-            "  FROM dbo.rent\n" +
-            "  WHERE movieId=m.id AND isReturned=0\n" +
-            "  ) < quantity", nativeQuery = true)
+            "  FROM movie as m \n" +
+            "  WHERE m.[name] like %?1% AND " +
+            "       (SELECT COUNT(movieId)\n" +
+            "        FROM dbo.rent\n" +
+            "        WHERE movieId=m.id AND isReturned=0\n" +
+            "        ) < m.quantity",
+            nativeQuery = true)
     Optional<List<Movie>> findByMovieName(String movieName);
 
     @Query(value = "SELECT Distinct m.id\n" +
@@ -54,14 +54,14 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
             "      ,m.quantity\n" +
             "      ,m.image\n" +
             "      ,m.insertionTime\n" +
-            "  FROM movieCategories as mc\n" +
-            "  join movie as m \n" +
-            "  on m.id=mc.movieId\n" +
-            "  WHERE mc.categoryId = ?1 AND (\n" +
-            "  SELECT COUNT(movieId)\n" +
-            "  FROM dbo.rent\n" +
-            "  WHERE movieId=m.id AND isReturned=0\n" +
-            "  ) < quantity", nativeQuery = true)
+            "  FROM movie as m \n" +
+            "  WHERE ?1 in (SELECT DISTINCT mc.categoryId  from dbo.movieCategories mc \n" +
+            "               where mc.movieId = m.id ) AND " +
+            "         (SELECT COUNT(movieId)\n" +
+            "          FROM dbo.rent\n" +
+            "          WHERE movieId=m.id AND isReturned=0\n" +
+            "          ) < m.quantity",
+            nativeQuery = true)
     Optional<List<Movie>> findByCategoryId(Integer categoryId);
 
     @Query(value = "SELECT Distinct m.id\n" +
@@ -77,7 +77,7 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
             "  SELECT COUNT(movieId)\n" +
             "  FROM dbo.rent\n" +
             "  WHERE movieId=m.id AND isReturned=0\n" +
-            "  ) < quantity", nativeQuery = true)
+            "  ) < m.quantity", nativeQuery = true)
     Optional<List<Movie>> findMovies();
 
     @Query(value = "SELECT Distinct m.id\n" +

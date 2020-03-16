@@ -30,69 +30,6 @@ public class RentController {
         return rentRepository.AllRents();
     }
 
-//    @GetMapping("/Rents/User/{User}/Movie/{Movie}/from/{FromDate}/to/{ToDate}/IsReturn/{IsReturn}")
-//    public List<RentNameDetails> getAllRentsByUserAndMovie(@PathVariable(value = "User") String user,
-//                                                           @PathVariable(value = "Movie") String movie,
-//                                                           @PathVariable(value = "FromDate") java.sql.Date fromDate,
-//                                                           @PathVariable(value = "ToDate") java.sql.Date toDate,
-//                                                           @PathVariable(value = "IsReturn") String isReturn) {
-//
-//        if (!isReturn.isEmpty() && isReturn.equals("all")) {
-//            if (!user.isEmpty() && !movie.isEmpty())
-//                return rentRepository.findRentsWithUserMovie(user, movie, fromDate, toDate);
-//            else if (!user.isEmpty())
-//                return rentRepository.findRentsWithUser(user, fromDate, toDate);
-//            else if (!movie.isEmpty())
-//                return rentRepository.findRentsWithMovie(movie, fromDate, toDate);
-//        } else {
-//            boolean isReturned = false;
-//            if (!isReturn.isEmpty() && isReturn.equals("yes"))
-//                isReturned = true;
-//
-//            System.out.println("user " + user.isEmpty() + " " + "movie " + movie.isEmpty());
-//            if (!user.isEmpty() && !movie.isEmpty())
-//                return rentRepository.findRentsWithUserMovieIsReturn(user, movie, fromDate, toDate, isReturned);
-//            else if (!user.isEmpty() && movie.isEmpty())
-//                return rentRepository.findRentsWithUserIsReturn(user, fromDate, toDate, isReturned);
-//            else if (user.isEmpty() && movie.isEmpty())
-//                return rentRepository.findRentsWithMovieIsReturn(movie, fromDate, toDate, isReturned);
-//        }
-//        return null;
-//    }
-//
-//    @GetMapping("/Rents/User/{User}/from/{FromDate}/to/{ToDate}/IsReturn/{IsReturn}")
-//    public List<RentNameDetails> getAllRentsByUser(@PathVariable(value = "User") String user,
-//                                                   @PathVariable(value = "FromDate") java.sql.Date fromDate,
-//                                                   @PathVariable(value = "ToDate") java.sql.Date toDate,
-//                                                   @PathVariable(value = "IsReturn") String isReturn) {
-//
-//        if (!isReturn.isEmpty() && isReturn.equals("all")) {
-//            return rentRepository.findRentsWithUser(user, fromDate, toDate);
-//        } else {
-//            boolean isReturned = false;
-//            if (!isReturn.isEmpty() && isReturn.equals("yes"))
-//                isReturned = true;
-//
-//            return rentRepository.findRentsWithUserIsReturn(user, fromDate, toDate, isReturned);
-//        }
-//    }
-//
-//    @GetMapping("/Rents/Movie/{Movie}/from/{FromDate}/to/{ToDate}/IsReturn/{IsReturn}")
-//    public List<RentNameDetails> getAllRentsByMovie(@PathVariable(value = "Movie") String movie,
-//                                                    @PathVariable(value = "FromDate") java.sql.Date fromDate,
-//                                                    @PathVariable(value = "ToDate") java.sql.Date toDate,
-//                                                    @PathVariable(value = "IsReturn") String isReturn) {
-//
-//        if (!isReturn.isEmpty() && isReturn.equals("all")) {
-//            return rentRepository.findRentsWithMovie(movie, fromDate, toDate);
-//        } else {
-//            boolean isReturned = false;
-//            if (!isReturn.isEmpty() && isReturn.equals("yes"))
-//                isReturned = true;
-//
-//            return rentRepository.findRentsWithMovieIsReturn(movie, fromDate, toDate, isReturned);
-//        }
-//    }
 
     @PostMapping("/Rents/Query")
     public List<RentNameDetails> queryRents(@Valid @RequestBody RentQuery rent) {
