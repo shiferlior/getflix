@@ -8,6 +8,6 @@ import java.util.Optional;
 import java.util.List;
 
 public interface MovieCategoriesRepository extends JpaRepository<MovieCategories,Integer> {
-    @Query(value = "select mc.* from dbo.movieCategories mc join dbo.category c on mc.categoryId  = c.id where mc.movieId  =  ?1", nativeQuery = true)
+    @Query(value = "select mc.* from dbo.movieCategories mc where mc.movieId  =  ?1", nativeQuery = true)
     List<MovieCategories> findMovieCategoriesByMovieId(Integer movieId);
 }
