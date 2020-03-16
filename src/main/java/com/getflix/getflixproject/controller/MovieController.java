@@ -1,5 +1,6 @@
 package com.getflix.getflixproject.controller;
 
+import com.getflix.getflixproject.model.MovieQuery;
 import com.getflix.getflixproject.repository.MovieRepository;
 import com.getflix.getflixproject.ResourceNotFoundException;
 import com.getflix.getflixproject.model.Movie;
@@ -42,6 +43,26 @@ public class MovieController {
             throws ResourceNotFoundException {
         return movieRepository.findByCategoryId(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Movies not found for this category id :: " + categoryId));
+    }
+
+    @PostMapping("/Movies/Query")
+    public List<Movie> queryMovies(@Valid @RequestBody MovieQuery movieQuery) throws ResourceNotFoundException {
+        if (!movieQuery.getMovieName().isEmpty() && movieQuery.getCategoryId() != -1) {
+            return movieRepository.findByMovieNameAndCategory(movieQuery.getMovieName(),movieQuery.getCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Movies not found for rent"));
+        }
+        else if(!movieQuery.getMovieName().isEmpty() && movieQuery.getCategoryId() == -1) {
+            return movieRepository.findByMovieName(movieQuery.getMovieName())
+                    .orElseThrow(() -> new ResourceNotFoundException("Movies not found for rent"));
+        }
+        else if(movieQuery.getMovieName().isEmpty() && movieQuery.getCategoryId() != -1) {
+            return movieRepository.findByCategoryId(movieQuery.getCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Movies not found for rent"));
+        }
+        else {
+            return  movieRepository.findMovies()
+                    .orElseThrow(() -> new ResourceNotFoundException("Movies not found for rent"));
+        }
     }
 
     @PostMapping("/Movies")
