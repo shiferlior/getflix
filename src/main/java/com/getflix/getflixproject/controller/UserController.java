@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -24,13 +25,18 @@ public class UserController {
     }
 
     @PostMapping("/Users")
-    public User createUser(@Valid @RequestBody User user){
-        return userRepository.save(user);
+    public User createUser(@Valid @RequestBody User user) throws ResourceNotFoundException {
+
+        if(!userRepository.findUser(user.getName(),user.getPassword()).isPresent())
+                return userRepository.save(user);
+        else
+            throw new ResourceNotFoundException("User is already register in Getflix, try to login");
     }
 
     @PostMapping("/Users/Login")
-    public User loginUser(@Valid @RequestBody User user){
-        return userRepository.findUser(user.getName(),user.getPassword());
+    public User loginUser(@Valid @RequestBody User user)  throws ResourceNotFoundException {
+        return userRepository.findUser(user.getName(),user.getPassword())
+                .orElseThrow(() -> new ResourceNotFoundException("User \'" + user.getName() + "\' not found"));
     }
 
 
